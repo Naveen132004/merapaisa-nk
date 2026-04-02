@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Paisa — Premium personal finance tracker for India. Track expenses, income, UPI, bank accounts, and credit cards.">
+    
+    <title>Paisa — Smart Money Tracker</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF6B00'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='white'>₹</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">₹</div>
+        <h1 class="splash-title">Paisa</h1>
+        <p class="splash-sub">Smart Money Tracker</p>
+        <div class="splash-loader">
+            <div class="splash-loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- ===== AUTH SCREEN ===== -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-bg">
+            <div class="auth-orb auth-orb-1"></div>
+            <div class="auth-orb auth-orb-2"></div>
+            <div class="auth-orb auth-orb-3"></div>
+        </div>
+        <div class="auth-container">
+            <div class="auth-brand">
+                <div class="auth-logo">₹</div>
+                <h1 class="auth-title">Paisa</h1>
+                <p class="auth-tagline">Smart Money Tracker</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-card" id="loginCard">
+                <h2 class="auth-card-title">Welcome Back</h2>
+                <p class="auth-card-sub">Sign in to continue tracking</p>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="auth-field">
+                        <label for="loginUsername">Username</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <input type="text" id="loginUsername" class="auth-input" placeholder="Enter your username" required autocomplete="username">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label for="loginPin">PIN</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            <input type="password" id="loginPin" class="auth-input" placeholder="Enter 4-digit PIN" required maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="current-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn" id="loginBtn">
+                        <span>Sign In</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    <span>Don't have an account?</span>
+                    <button class="auth-switch-btn" onclick="showSignup()">Create Account</button>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="auth-card hidden" id="signupCard">
+                <h2 class="auth-card-title">Create Account</h2>
+                <p class="auth-card-sub">Start your financial journey</p>
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="auth-field">
+                        <label for="signupName">Full Name</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <input type="text" id="signupName" class="auth-input" placeholder="Enter your name" required autocomplete="name">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label for="signupUsername">Username</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                            <input type="text" id="signupUsername" class="auth-input" placeholder="Choose a username" required autocomplete="username">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label for="signupPin">Set PIN</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            <input type="password" id="signupPin" class="auth-input" placeholder="Create 4-digit PIN" required maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label for="signupPinConfirm">Confirm PIN</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <input type="password" id="signupPinConfirm" class="auth-input" placeholder="Confirm your PIN" required maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn" id="signupBtn">
+                        <span>Create Account</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    <span>Already have an account?</span>
+                    <button class="auth-switch-btn" onclick="showLogin()">Sign In</button>
+                </div>
+            </div>
+
+            <p class="auth-footer">🇮🇳 Made in India with ❤️</p>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app hidden" id="app">
+
+        <!-- ===== HOME SCREEN ===== -->
+        <section class="screen active" id="screen-home">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span class="status-time" id="statusTime">9:41</span>
+                <div class="status-icons">
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="1"/><rect x="4.5" y="2.5" width="3" height="9.5" rx="1"/><rect x="9" y="1" width="3" height="11" rx="1"/><rect x="13.5" y="0" width="2.5" height="12" rx="1"/></svg>
+                    <svg width="22" height="12" viewBox="0 0 22 12" fill="currentColor"><rect x="0" y="0" width="20" height="12" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="5" rx="0.75"/></svg>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="home-header">
+                <div>
+                    <p class="greeting-sub" id="greetingText">GOOD MORNING</p>
+                    <h1 class="greeting-name">Naveen</h1>
+                </div>
+                <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="notif-dot"></span>
+                </button>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="balance-card" id="balanceCard">
+                <div class="balance-card-glow"></div>
+                <div class="balance-top">
+                    <div>
+                        <p class="balance-label">NET WORTH</p>
+                        <h2 class="balance-amount" id="totalBalance">₹0</h2>
+                    </div>
+                    <div class="balance-badge" id="balanceBadge">
+                        <span>↑ 0%</span>
+                    </div>
+                </div>
+                <div class="accounts-grid" id="accountsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="openAddTransaction('expense')">
+                    <div class="qa-icon qa-expense">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                    </div>
+                    <span>Expense</span>
+                </button>
+                <button class="quick-action-btn" onclick="openAddTransaction('income')">
+                    <div class="qa-icon qa-income">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                    </div>
+                    <span>Income</span>
+                </button>
+                <button class="quick-action-btn" onclick="openAddTransaction('transfer')">
+                    <div class="qa-icon qa-transfer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                    </div>
+                    <span>Transfer</span>
+                </button>
+                <button class="quick-action-btn" onclick="navigateTo('stats')">
+                    <div class="qa-icon qa-stats">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <span>Analytics</span>
+                </button>
+            </div>
+
+            <!-- Spending Chart Preview -->
+            <div class="card spending-preview">
+                <div class="card-header">
+                    <h3>This Month</h3>
+                    <div class="period-tabs">
+                        <span class="period-tab" data-period="week">W</span>
+                        <span class="period-tab active" data-period="month">M</span>
+                        <span class="period-tab" data-period="year">Y</span>
+                    </div>
+                </div>
+                <div class="spending-summary">
+                    <div class="spending-item">
+                        <span class="spending-dot spending-dot-income"></span>
+                        <div>
+                            <span class="spending-label">Income</span>
+                            <span class="spending-value" id="homeIncome">₹0</span>
+                        </div>
+                    </div>
+                    <div class="spending-divider"></div>
+                    <div class="spending-item">
+                        <span class="spending-dot spending-dot-expense"></span>
+                        <div>
+                            <span class="spending-label">Expense</span>
+                            <span class="spending-value" id="homeExpense">₹0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-chart" id="miniBarChart"></div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card transactions-card">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                    <button class="see-all-btn" onclick="navigateTo('home')">View All</button>
+                </div>
+                <div class="transactions-list" id="recentTransactions">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STATS SCREEN ===== -->
+        <section class="screen" id="screen-stats">
+            <div class="status-bar">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="1"/><rect x="4.5" y="2.5" width="3" height="9.5" rx="1"/><rect x="9" y="1" width="3" height="11" rx="1"/><rect x="13.5" y="0" width="2.5" height="12" rx="1"/></svg>
+                    <svg width="22" height="12" viewBox="0 0 22 12" fill="currentColor"><rect x="0" y="0" width="20" height="12" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="5" rx="0.75"/></svg>
+                </div>
+            </div>
+            <div class="screen-title">
+                <h1>Analytics</h1>
+                <p>Your spending patterns</p>
+            </div>
+
+            <!-- Period Selector -->
+            <div class="stats-period-selector">
+                <button class="stats-period active" data-stats-period="week">Week</button>
+                <button class="stats-period" data-stats-period="month">Month</button>
+                <button class="stats-period" data-stats-period="year">Year</button>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="stats-overview">
+                <div class="stats-ov-card stats-income-card">
+                    <div class="stats-ov-icon">↓</div>
+                    <div>
+                        <span class="stats-ov-label">Income</span>
+                        <span class="stats-ov-amount" id="statsIncome">₹0</span>
+                    </div>
+                </div>
+                <div class="stats-ov-card stats-expense-card">
+                    <div class="stats-ov-icon stats-ov-expense">↑</div>
+                    <div>
+                        <span class="stats-ov-label">Expense</span>
+                        <span class="stats-ov-amount" id="statsExpense">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>By Category</h3>
+                </div>
+                <div class="category-bars" id="categoryBars">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Bar Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Daily Spending</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statsBarChart" width="350" height="180"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ACCOUNTS SCREEN ===== -->
+        <section class="screen" id="screen-cards">
+            <div class="status-bar">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="1"/><rect x="4.5" y="2.5" width="3" height="9.5" rx="1"/><rect x="9" y="1" width="3" height="11" rx="1"/><rect x="13.5" y="0" width="2.5" height="12" rx="1"/></svg>
+                    <svg width="22" height="12" viewBox="0 0 22 12" fill="currentColor"><rect x="0" y="0" width="20" height="12" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="5" rx="0.75"/></svg>
+                </div>
+            </div>
+            <div class="screen-title">
+                <h1>Accounts</h1>
+                <p>Manage your money sources</p>
+            </div>
+
+            <div class="accounts-list" id="accountsList">
+                <!-- Populated by JS -->
+            </div>
+
+            <button class="add-account-btn" onclick="openAddAccount()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Account
+            </button>
+        </section>
+
+        <!-- ===== SETTINGS SCREEN ===== -->
+        <section class="screen" id="screen-settings">
+            <div class="status-bar">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="1"/><rect x="4.5" y="2.5" width="3" height="9.5" rx="1"/><rect x="9" y="1" width="3" height="11" rx="1"/><rect x="13.5" y="0" width="2.5" height="12" rx="1"/></svg>
+                    <svg width="22" height="12" viewBox="0 0 22 12" fill="currentColor"><rect x="0" y="0" width="20" height="12" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="5" rx="0.75"/></svg>
+                </div>
+            </div>
+            <div class="screen-title">
+                <h1>Settings</h1>
+                <p>Customize your experience</p>
+            </div>
+
+            <div class="settings-list">
+                <div class="settings-group">
+                    <h4 class="settings-group-title">Profile</h4>
+                    <div class="settings-item" onclick="editProfile()">
+                        <div class="settings-icon">👤</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Edit Name</span>
+                            <span class="settings-desc" id="settingsName">Naveen</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-icon">💰</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Currency</span>
+                            <span class="settings-desc">₹ INR</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h4 class="settings-group-title">Data</h4>
+                    <div class="settings-item" onclick="exportData()">
+                        <div class="settings-icon">📤</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Export Data</span>
+                            <span class="settings-desc">Download as JSON</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="settings-item" onclick="importData()">
+                        <div class="settings-icon">📥</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Import Data</span>
+                            <span class="settings-desc">Restore from backup</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="settings-item danger" onclick="clearAllData()">
+                        <div class="settings-icon">🗑️</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Clear All Data</span>
+                            <span class="settings-desc">Remove everything</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h4 class="settings-group-title">Account</h4>
+                    <div class="settings-item" onclick="switchUser()">
+                        <div class="settings-icon">🔄</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Switch User</span>
+                            <span class="settings-desc">Log in as a different user</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="settings-item danger" onclick="logoutUser()">
+                        <div class="settings-icon">🚪</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Log Out</span>
+                            <span class="settings-desc" id="loggedInAs">Sign out of current session</span>
+                        </div>
+                        <svg class="settings-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h4 class="settings-group-title">About</h4>
+                    <div class="settings-item">
+                        <div class="settings-icon">📱</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Version</span>
+                            <span class="settings-desc">1.0.0</span>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-icon">🇮🇳</div>
+                        <div class="settings-info">
+                            <span class="settings-label">Made in India</span>
+                            <span class="settings-desc">With ❤️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAB ===== -->
+        <button class="fab" id="fabBtn" onclick="openAddTransaction()" aria-label="Add Transaction">
+            <span class="fab-icon">+</span>
+        </button>
+
+        <!-- ===== BOTTOM NAV ===== -->
+        <nav class="bottom-nav" id="bottomNav">
+            <button class="nav-item active" data-screen="home" onclick="navigateTo('home')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h1v7a2 2 0 002 2h12a2 2 0 002-2v-7h1a1 1 0 00.7-1.71l-9-8.5a1 1 0 00-1.4 0l-9 8.5A1 1 0 003 13z"/></svg>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-screen="stats" onclick="navigateTo('stats')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M21 21H4.6C4.03995 21 3.75992 21 3.54601 20.891C3.35785 20.7951 3.20487 20.6422 3.10899 20.454C3 20.2401 3 19.9601 3 19.4V3M7 15l4-4 4 4 6-6"/></svg>
+                <span>Stats</span>
+            </button>
+            <button class="nav-item" data-screen="cards" onclick="navigateTo('cards')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19 5H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2zM3 10h18"/></svg>
+                <span>Accounts</span>
+            </button>
+            <button class="nav-item" data-screen="settings" onclick="navigateTo('settings')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <span>More</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ===== ADD TRANSACTION MODAL ===== -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal" id="addModalContent">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Expense</h2>
+                <button class="modal-close" onclick="closeAddTransaction()" aria-label="Close">✕</button>
+            </div>
+
+            <!-- Type Tabs -->
+            <div class="modal-type-tabs">
+                <button class="modal-tab active" data-type="expense" onclick="switchTransactionType('expense')">Expense</button>
+                <button class="modal-tab" data-type="income" onclick="switchTransactionType('income')">Income</button>
+            </div>
+
+            <form id="transactionForm" onsubmit="saveTransaction(event)">
+                <!-- Amount -->
+                <div class="amount-input-group">
+                    <span class="amount-prefix">₹</span>
+                    <input type="number" id="txAmount" class="amount-input" placeholder="0" required min="1" step="0.01" inputmode="decimal" autocomplete="off">
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="txDescription" class="form-input" placeholder="What was this for?" required autocomplete="off">
+                </div>
+
+                <!-- Category -->
+                <div class="form-group">
+                    <label>Category</label>
+                    <div class="category-grid" id="categoryGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Account -->
+                <div class="form-group">
+                    <label>Account</label>
+                    <select id="txAccount" class="form-select" required>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Date -->
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="txDate" class="form-input" required>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>Add Expense</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADD ACCOUNT MODAL ===== -->
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Account</h2>
+                <button class="modal-close" onclick="closeAddAccount()" aria-label="Close">✕</button>
+            </div>
+            <form id="accountForm" onsubmit="saveAccount(event)">
+                <div class="form-group">
+                    <label>Account Name</label>
+                    <input type="text" id="accName" class="form-input" placeholder="e.g. HDFC Savings" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <select id="accType" class="form-select" required>
+                        <option value="bank">🏦 Bank Account</option>
+                        <option value="upi">📱 UPI</option>
+                        <option value="cash">💵 Cash</option>
+                        <option value="credit">💳 Credit Card</option>
+                        <option value="wallet">👛 Wallet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Opening Balance</label>
+                    <div class="amount-input-group amount-input-sm">
+                        <span class="amount-prefix">₹</span>
+                        <input type="number" id="accBalance" class="amount-input" placeholder="0" required step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span>Add Account</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== EDIT NAME MODAL ===== -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit Name</h2>
+                <button class="modal-close" onclick="closeNameModal()" aria-label="Close">✕</button>
+            </div>
+            <form onsubmit="saveName(event)">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="userName" class="form-input" placeholder="Enter your name" required autocomplete="off">
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span>Save</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastMsg"></span>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importInput" accept=".json" style="display:none" onchange="handleImport(event)">
+
+    <script src="script.js"></script>
+</body>
+</html>
